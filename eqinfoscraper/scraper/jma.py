@@ -1,6 +1,6 @@
 import re
-from bs4 import BeautifulSoup
 from datetime import datetime
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,11 +8,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from eqinfoscraper.exceptions import InvalidURLError
 from eqinfoscraper.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
 
-
-def scrape_data(URL="https://www.data.jma.go.jp/multi/quake/index.html?lang=en", cutoff_date=None):
+def scrape_data(URL, cutoff_date=None):
     """
     Scrapes data from the specified URL
     """
+
     webpage = _get_html_content(URL)
     soupified_page = BeautifulSoup(webpage, 'html.parser')
     table = soupified_page.find("tbody")
@@ -30,8 +30,11 @@ def scrape_data(URL="https://www.data.jma.go.jp/multi/quake/index.html?lang=en",
 
 def _get_html_content(URL):
     """
-    Fetches the HTML content of the specified URL, including dynamically
-    loaded elements.
+    Fetches the HTML content of the specified URL using Selenium.
+
+    This function initializes a headless Chrome WebDriver, navigates to the given URL,
+    waits for the presence of a <td> element to ensure the page has loaded, and then
+    retrieves the page source.
     """
 
     if not _is_valid_url(URL):
@@ -60,7 +63,6 @@ def _extract_data(entry, cutoff_date=None):
     """
     Extract each data and return the values in a dictionary object
     """
-    
 
     # Get date
     eq_observed_date = entry.find_all("td")[0].text
@@ -130,9 +132,3 @@ def _get_eq_details_link(entry):
     link = first_row.find("a")
 
     return BASE_URL + link["href"]
-
-if __name__ == "__main__":
-    data = scrape_data()
-    for each in data:
-        print(each)
-        print()
