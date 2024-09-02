@@ -53,7 +53,7 @@ def _extract_data(entry, cutoff_date=None):
     Extract each data and return the values in a dictionary object
     """
     # Get date
-    eq_date = entry.find("a")
+    eq_date = _get_date(entry)
 
     if cutoff_date:
         if _is_before_cutoff_date(eq_date, cutoff_date):
@@ -65,13 +65,13 @@ def _extract_data(entry, cutoff_date=None):
     eq_depth = entry.find_all("td")[3].text.strip()
     eq_magnitude = entry.find_all("td")[4].text.strip()
     eq_location = _get_location(entry)
-    eq_details_link = str("https://earthquake.phivolcs.dost.gov.ph/" + (eq_date["href"]))
-    eq_image_link = _get_image_link(eq_date)
+    eq_details_link = str("https://earthquake.phivolcs.dost.gov.ph/" + (entry.find("a")["href"]))
+    eq_image_link = _get_image_link(entry)
 
     # Organize data into a dictionary object and return the object
     eq_entry_details = {
         "location": eq_location,
-        "date": str(eq_date.text.strip()),
+        "date": str(eq_date),
         "coordinates": {
             "latitude": eq_latitude,
             "longitude": eq_longitude
@@ -117,6 +117,15 @@ def _is_before_cutoff_date(retrieve_date, cutoff_date):
     if retrieve_date < cutoff_date:
         return True
 
+def _get_date(entry):
+    """
+    Extracts the date from the entry and removes extra spaces between words
+    as well as the leading and trailing whitespaces.
+    """
+    raw_date_str = entry.find("td").text
+    date = re.sub(r"\s+", " ", raw_date_str).strip()
+    return date
+
 def _get_location(entry):
     """
     Extracts the location and returns it as a string
@@ -127,7 +136,7 @@ def _get_location(entry):
 
     return complete_location
 
-def _get_image_link(retrieve_date):
+def _get_image_link(entry):
     """
     Returns an HTML link that contains an image of the earthquake location.
     This uses the link retrieved from the anchor tag that contains the earthquake
@@ -136,6 +145,7 @@ def _get_image_link(retrieve_date):
     the base URL to it. After that, it will return a string containing the
     image link.
     """
+    retrieve_date = entry.find("a")
     raw_link = re.sub("html", "jpg", retrieve_date["href"])
     base_url = "https://earthquake.phivolcs.dost.gov.ph/"
     image_link = base_url + raw_link
