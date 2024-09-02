@@ -71,6 +71,7 @@ def _extract_data(entry, cutoff_date=None):
 
     # Get all other necessary eq details
     eq_location = entry.find_all("td")[1].text
+    eq_location = re.sub(r'\s+', ' ', eq_location) # Removes extra spaces between words
     eq_magnitude = entry.find_all("td")[2].text
     eq_max_seismic_intensity = entry.find_all("td")[3].text
     eq_issuance_date = entry.find_all("td")[4].text
