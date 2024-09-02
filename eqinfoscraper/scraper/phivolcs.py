@@ -7,7 +7,7 @@ from eqinfoscraper.exceptions import InvalidURLError
 from eqinfoscraper.constants import PHIVOLCS_CA_CERT_PATH, VALID_URL_FORMATS, VALID_DATE_FORMATS
 
 
-def _scrape_data(URL, cutoff_date):
+def scrape_data(URL, cutoff_date):
     """
     Scrapes data from the specified URL
     """
@@ -90,7 +90,7 @@ def _is_valid_url(URL):
     of data.
     """
 
-    for valid_url_format in VALID_URL_FORMATS:
+    for valid_url_format in VALID_URL_FORMATS["PHIVOLCS"]:
         if re.match(valid_url_format, URL):
             return True
     return False

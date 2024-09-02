@@ -12,13 +12,24 @@ def get_ca_cert_file_path():
 PHIVOLCS_CA_CERT_PATH = get_ca_cert_file_path()
 PHIVOLCS_HOME_URL = "https://earthquake.phivolcs.dost.gov.ph/"
 
-VALID_URL_FORMATS = [
-    r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?$",
-    r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?EQLatest-Monthly\/[2][0](([1][7-9])|[2][0-4])\/[\w\.?]+\/?$"
-]
+VALID_URL_FORMATS = {
+    "PHIVOLCS": [
+        r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?$",
+        r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?EQLatest-Monthly\/[2][0](([1][7-9])|[2][0-4])\/[\w\.?]+\/?$"
+    ],
+    "JMA": [
+        r"^https?:\/\/www.data.jma.go.jp\/multi\/quake\/index.html(\?lang=en)?\/?$"
+    ]
+}
 
-VALID_DATE_FORMATS = [
-    "%d %B %Y - %I:%M %p",
-    "%d %b %Y - %I:%M %p",
-    "%Y%m%d_%H%M"
-]
+VALID_DATE_FORMATS = {
+    "PHIVOLCS": [
+        "%d %B %Y - %I:%M %p",
+        "%d %b %Y - %I:%M %p",
+        "%Y%m%d_%H%M"
+    ],
+    "JMA": [
+        "%Y/%m/%d %H:%M",
+        "%Y%m%d_%H%M"
+    ]
+}
