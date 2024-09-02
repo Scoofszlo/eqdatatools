@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "eqinfoscraper"
+version = "0.1.0-beta.1"
+description = "A Python package that scrapes earthquake data from PHIVOLCS website."
+authors = ["Scoofszlo <scoofszlo@gmail.com>"]
+include = [
+    { path = "phivolcs_ca_cert", format = ["sdist", "wheel"] }
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+bs4 = "^0.0.2"
+tqdm = "^4.66.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
