@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "eqinfoscraper"
 version = "0.1.0-beta.1"
-description = "A Python package that scrapes earthquake data from PHIVOLCS website."
+description = "A Python script that scrapes earthquake data from PHIVOLCS and JMA."
 authors = ["Scoofszlo <scoofszlo@gmail.com>"]
 include = [
     { path = "phivolcs_ca_cert", format = ["sdist", "wheel"] }
