@@ -33,3 +33,10 @@ VALID_DATE_FORMATS = {
         "%Y%m%d_%H%M"
     ]
 }
+
+DATE_REGEX_PATTERN = {
+    "PHIVOLCS": r"((\d{2})\s+(\w+)\s+(\d{4})\s+-\s+(\d{2}:\d{2}\s+[A|P]M))"
+}
+
+# Pattern to match non-printable characters
+NON_PRINTABLE_CHAR_PATTERN = r"[^\x20-\x7E]"

@@ -4,8 +4,13 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from tqdm import tqdm
 from eqinfoscraper.exceptions import InvalidURLError
-from eqinfoscraper.constants import PHIVOLCS_CA_CERT_PATH, VALID_URL_FORMATS, VALID_DATE_FORMATS
-
+from eqinfoscraper.constants import (
+    PHIVOLCS_CA_CERT_PATH,
+    VALID_URL_FORMATS,
+    VALID_DATE_FORMATS,
+    DATE_REGEX_PATTERN,
+    NON_PRINTABLE_CHAR_PATTERN
+)
 
 def scrape_data(URL, cutoff_date):
     """
@@ -60,12 +65,12 @@ def _extract_data(entry, cutoff_date=None):
             return None
 
     # Get all other necessary eq details
-    eq_latitude = entry.find_all("td")[1].text.strip()
-    eq_longitude = entry.find_all("td")[2].text.strip()
-    eq_depth = entry.find_all("td")[3].text.strip()
-    eq_magnitude = entry.find_all("td")[4].text.strip()
+    eq_latitude = _get_latitude(entry)
+    eq_longitude = _get_longitude(entry)
+    eq_depth = _get_depth(entry)
+    eq_magnitude = _get_magnitude(entry)
     eq_location = _get_location(entry)
-    eq_details_link = str("https://earthquake.phivolcs.dost.gov.ph/" + (entry.find("a")["href"]))
+    eq_details_link = _get_eq_details_link(entry)
     eq_image_link = _get_image_link(entry)
 
     # Organize data into a dictionary object and return the object
@@ -119,12 +124,51 @@ def _is_before_cutoff_date(retrieve_date, cutoff_date):
 
 def _get_date(entry):
     """
-    Extracts the date from the entry and removes extra spaces between words
-    as well as the leading and trailing whitespaces.
+    Extracts the date from the entry and removes extra spaces around words,
+    as well as non-printable characters.
     """
-    raw_date_str = entry.find("td").text
-    date = re.sub(r"\s+", " ", raw_date_str).strip()
-    return date
+    raw_date_str = entry.find_all("td")[0].text
+    cleaned_date_str = re.sub(NON_PRINTABLE_CHAR_PATTERN, "", raw_date_str)
+
+    match = re.match(DATE_REGEX_PATTERN["PHIVOLCS"], cleaned_date_str)
+
+    if match:
+        return match.group()
+    else:
+        return None
+
+def _get_latitude(entry):
+    latitude = entry.find_all("td")[1].text.strip()
+
+    if _is_empty_value(latitude):
+        return None
+
+    return latitude
+
+def _get_longitude(entry):
+    longitude = entry.find_all("td")[2].text.strip()
+
+    if _is_empty_value(longitude):
+        return None
+
+    return longitude
+
+def _get_depth(entry):
+    depth = entry.find_all("td")[3].text.strip()
+
+    return depth
+
+def _get_magnitude(entry):
+    magnitude = entry.find_all("td")[4].text.strip()
+
+    return magnitude
+
+def _get_eq_details_link(entry):
+    BASE_URL = r"https://earthquake.phivolcs.dost.gov.ph/"
+    SUBDIRECTORY_URL = entry.find("a")["href"]
+    eq_details_link = BASE_URL + SUBDIRECTORY_URL
+
+    return eq_details_link
 
 def _get_location(entry):
     """
@@ -151,3 +195,7 @@ def _get_image_link(entry):
     image_link = base_url + raw_link
 
     return image_link
+
+def _is_empty_value(str):
+    if str == "-":
+        return True
