@@ -9,11 +9,12 @@ include = [
 
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.8"
 requests = "^2.32.3"
 bs4 = "^0.0.2"
 tqdm = "^4.66.5"
 webdriver-manager = "^4.0.2"
+selenium = "^4.24.0"
 
 
 [build-system]
