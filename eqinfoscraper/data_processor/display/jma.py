@@ -48,8 +48,8 @@ def display_all_entries(eq_list,
             if attribute[0] != "Date":
                 print(f"{attribute[0]}: {every_entry[attribute[1]]}")
             else:
-                print(f"Observed Date: {every_entry[attribute[1]]["observed_date"]}")
-                print(f"Issuance Date: {every_entry[attribute[1]]["issuance_date"]}")
+                print(f"Observed Date: {every_entry[attribute[1]]['observed_date']}")
+                print(f"Issuance Date: {every_entry[attribute[1]]['issuance_date']}")
         print()
 
 def _get_month_and_year(eq_stats):
