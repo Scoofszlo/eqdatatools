@@ -35,7 +35,7 @@ VALID_DATE_FORMATS = {
 }
 
 DATE_REGEX_PATTERN = {
-    "PHIVOLCS": r"((\d{2})\s+(\w+)\s+(\d{4})\s+-\s+(\d{2}:\d{2}\s+[A|P]M))"
+    "PHIVOLCS": r"((\d{2})\s+(\w+)\s+(\d{4})\s+-\s+(\d{2}:\d{2}\s+[AaPp][Mm]))"
 }
 
 # Pattern to match non-printable characters
