@@ -48,9 +48,9 @@ def display_all_entries(eq_list,
     if magnitude:
         attributes_to_display.append(["Magnitude", "magnitude"])
     if link:
-        attributes_to_display.append(["EQ Details Link", "eq_details_link"])
+        attributes_to_display.append(["EQ Details Link", "event_details_url"])
     if image:
-        attributes_to_display.append(["Image Link", "image_link"])
+        attributes_to_display.append(["Image Link", "graphic_url"])
 
     for every_entry in eq_list:
         for attribute in attributes_to_display:
