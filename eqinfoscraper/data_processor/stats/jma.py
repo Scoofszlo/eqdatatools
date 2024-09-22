@@ -8,12 +8,22 @@ def get_stats(eq_list):
             "end_date": None,
         },
         "strongest": {
+            "date": None,
+            "location": None,
             "magnitude": None,
-            "location": None
+            "max_seismic_intensity": None,
+            "coordinates": None,
+            "depth": None,
+            "event_details_url": None,
         },
         "weakest": {
+            "date": None,
+            "location": None,
             "magnitude": None,
-            "location": None
+            "max_seismic_intensity": None,
+            "coordinates": None,
+            "depth": None,
+            "event_details_url": None,
         },
         "recorded_eqs": {
             "total": 0,
@@ -57,16 +67,26 @@ def _set_if_strongest_eq(entry, eq_list_overview):
     magnitude = entry["magnitude"]
 
     if _eq_is_stronger_than_current_strongest(magnitude, eq_list_overview):
-        eq_list_overview["strongest"]["magnitude"] = entry["magnitude"]
+        eq_list_overview["strongest"]["date"] = entry["date"]
         eq_list_overview["strongest"]["location"] = entry["location"]
+        eq_list_overview["strongest"]["magnitude"] = entry["magnitude"]
+        eq_list_overview["strongest"]["max_seismic_intensity"] = entry["max_seismic_intensity"]
+        eq_list_overview["strongest"]["coordinates"] = entry["coordinates"]
+        eq_list_overview["strongest"]["depth"] = entry["depth"]
+        eq_list_overview["strongest"]["event_details_url"] = entry["event_details_url"]
 
 
 def _set_if_weakest_eq(entry, eq_list_overview):
     magnitude = entry["magnitude"]
 
     if _eq_is_weaker_than_current_weakest(magnitude, eq_list_overview):
-        eq_list_overview["weakest"]["magnitude"] = entry["magnitude"]
+        eq_list_overview["weakest"]["date"] = entry["date"]
         eq_list_overview["weakest"]["location"] = entry["location"]
+        eq_list_overview["weakest"]["magnitude"] = entry["magnitude"]
+        eq_list_overview["weakest"]["max_seismic_intensity"] = entry["max_seismic_intensity"]
+        eq_list_overview["weakest"]["coordinates"] = entry["coordinates"]
+        eq_list_overview["weakest"]["depth"] = entry["depth"]
+        eq_list_overview["weakest"]["event_details_url"] = entry["event_details_url"]
 
 
 def _set_total_recorded_eqs(entry, eq_list_overview):
