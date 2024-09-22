@@ -40,14 +40,6 @@ class BaseScraper(ABC):
         pass
 
     @abstractmethod
-    def _get_html_content_as_soup(self, url):
-        pass
-
-    @abstractmethod
-    def _get_eq_data_table(self, webpage):
-        pass
-
-    @abstractmethod
     def _extract_data(self, entry, cutoff_date):
         pass
 
@@ -60,11 +52,7 @@ class BaseScraper(ABC):
         pass
 
     @abstractmethod
-    def _get_latitude(self, entry):
-        pass
-
-    @abstractmethod
-    def _get_longitude(self, entry):
+    def _get_coordinates(self, entry):
         pass
 
     @abstractmethod
@@ -81,8 +69,4 @@ class BaseScraper(ABC):
 
     @abstractmethod
     def _get_location(self, entry):
-        pass
-
-    @abstractmethod
-    def _get_graphic_url(self, entry):
         pass
