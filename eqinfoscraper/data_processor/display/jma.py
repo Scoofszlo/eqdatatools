@@ -1,11 +1,12 @@
 from datetime import datetime
 from eqinfoscraper.constants import VALID_DATE_FORMATS
 
+
 def display_overview(eq_stats):
     month_and_year = _get_month_and_year(eq_stats)
-    strongest_eq_location = eq_stats["strongest"]["location"]
+    strongest_eq_location = eq_stats["strongest"]["location"]["location_en"]
     strongest_eq_mag = eq_stats["strongest"]["magnitude"]
-    weakest_eq_location = eq_stats["weakest"]["location"]
+    weakest_eq_location = eq_stats["weakest"]["location"]["location_en"]
     weakest_eq_mag = eq_stats["weakest"]["magnitude"]
     total_recorded = eq_stats["recorded_eqs"]["total"]
     total_m8_0_or_greater = eq_stats["recorded_eqs"]["total_per_magnitude"]["m8_0_or_greater"]
@@ -24,6 +25,7 @@ Total Recorded  : {total_recorded}
         <=M4.0  : {total_below_m4_0}
 """
     print(result)
+
 
 def display_all_entries(eq_list,
                         location=True,
@@ -52,6 +54,7 @@ def display_all_entries(eq_list,
                 print(f"Issuance Date: {every_entry[attribute[1]]['issuance_date']}")
         print()
 
+
 def _get_month_and_year(eq_stats):
     date_format = VALID_DATE_FORMATS["JMA"][0]
 
@@ -59,9 +62,9 @@ def _get_month_and_year(eq_stats):
     end_date = datetime.strptime(eq_stats["date_range"]["end_date"], date_format)
 
     if start_date.month == end_date.month:
-        return str(start_date.strftime("%B %Y"))
+        return start_date.strftime("%B %Y")
     else:
         if start_date.year == end_date.year:
-            return str(start_date.strftime("%B") + "–" + end_date.strftime("%B %Y"))
+            return start_date.strftime("%B") + "–" + end_date.strftime("%B %Y")
         else:
-            return str(start_date.strftime("%B %Y") + "–" + end_date.strftime("%B %Y"))
+            return start_date.strftime("%B %Y") + "–" + end_date.strftime("%B %Y")
