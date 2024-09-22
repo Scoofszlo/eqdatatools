@@ -45,7 +45,6 @@ class JMAScraper(BaseScraper):
         eq_latitude, eq_longitude = self._get_coordinates(entry)
         eq_depth = self._get_depth(entry)
         eq_event_details_url = self._get_event_details_url(entry)
-        eq_graphic_url = None
 
         eq_entry_details = {
             "date": {
@@ -64,7 +63,6 @@ class JMAScraper(BaseScraper):
             },
             "depth": eq_depth,
             "event_details_url": eq_event_details_url,
-            "graphic_url": eq_graphic_url,
         }
 
         return eq_entry_details
@@ -96,6 +94,9 @@ class JMAScraper(BaseScraper):
         return location_en, location_jpn
 
     def _get_magnitude(self, entry):
+        if entry["mag"] == "":
+            return None
+
         magnitude = float(entry["mag"])
 
         if magnitude == "":
@@ -104,6 +105,9 @@ class JMAScraper(BaseScraper):
         return magnitude
 
     def _get_max_seismic_intensity(self, entry):
+        if entry["maxi"] == "":
+            return None
+
         max_seismic_intensity = int(entry["maxi"])
 
         return max_seismic_intensity
