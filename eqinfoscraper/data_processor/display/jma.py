@@ -33,7 +33,7 @@ def display_all_entries(eq_list,
                         magnitude=True,
                         link=True,
                         ):
-    
+
     attributes_to_display = []
 
     if location:

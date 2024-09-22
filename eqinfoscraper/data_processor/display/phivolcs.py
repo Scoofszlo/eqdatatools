@@ -1,6 +1,7 @@
 from datetime import datetime
 from eqinfoscraper.constants import VALID_DATE_FORMATS
 
+
 def display_overview(eq_stats):
     month_and_year = _get_month_and_year(eq_stats)
     strongest_eq_location = eq_stats["strongest"]["location"]
@@ -25,6 +26,7 @@ Total Recorded  : {total_recorded}
 """
     print(result)
 
+
 def display_all_entries(eq_list,
                         location=True,
                         date=True,
@@ -34,7 +36,7 @@ def display_all_entries(eq_list,
                         link=True,
                         image=True
                         ):
-    
+
     attributes_to_display = []
 
     if location:
@@ -56,6 +58,7 @@ def display_all_entries(eq_list,
         for attribute in attributes_to_display:
             print(f"{attribute[0]}: {every_entry[attribute[1]]}")
         print()
+
 
 def _get_month_and_year(eq_stats):
     date_format = VALID_DATE_FORMATS["PHIVOLCS"][0]

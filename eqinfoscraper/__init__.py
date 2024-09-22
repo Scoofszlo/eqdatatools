@@ -1,3 +1,3 @@
-from eqinfoscraper.classes import EarthquakeList
+from eqinfoscraper.eq_list import EarthquakeList
 
 __all__ = ["EarthquakeList"]

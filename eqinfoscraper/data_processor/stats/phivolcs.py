@@ -33,8 +33,9 @@ def get_stats(eq_list):
         _set_if_strongest_eq(entry, eq_list_overview)
         _set_if_weakest_eq(entry, eq_list_overview)
         _set_total_recorded_eqs(entry, eq_list_overview)
-    
+
     return eq_list_overview
+
 
 def _set_date_range(eq_list, eq_list_overview):
     """
@@ -50,6 +51,7 @@ def _set_date_range(eq_list, eq_list_overview):
     eq_list_overview["date_range"]["start_date"] = start_date
     eq_list_overview["date_range"]["end_date"] = end_date
 
+
 def _set_if_strongest_eq(entry, eq_list_overview):
     magnitude = entry["magnitude"]
 
@@ -57,12 +59,14 @@ def _set_if_strongest_eq(entry, eq_list_overview):
         eq_list_overview["strongest"]["magnitude"] = entry["magnitude"]
         eq_list_overview["strongest"]["location"] = entry["location"]
 
+
 def _set_if_weakest_eq(entry, eq_list_overview):
     magnitude = entry["magnitude"]
 
     if _eq_is_weaker_than_current_weakest(magnitude, eq_list_overview):
         eq_list_overview["weakest"]["magnitude"] = entry["magnitude"]
         eq_list_overview["weakest"]["location"] = entry["location"]
+
 
 def _set_total_recorded_eqs(entry, eq_list_overview):
     magnitude = entry["magnitude"]
@@ -72,14 +76,17 @@ def _set_total_recorded_eqs(entry, eq_list_overview):
     _increment_total(eq_list_overview)
     _increment_total_by_day(day, eq_list_overview)
 
+
 def _increment_total(eq_list_overview):
     eq_list_overview["recorded_eqs"]["total"] += 1
+
 
 def _increment_total_by_day(day, eq_list_overview):
     if day not in eq_list_overview["recorded_eqs"]["total_per_day"]:
         eq_list_overview["recorded_eqs"]["total_per_day"][day] = 0
 
     eq_list_overview["recorded_eqs"]["total_per_day"][day] += 1
+
 
 def _set_total_recorded_eqs_by_mag(magnitude, eq_list_overview):
     if float(magnitude) < 4.0:
@@ -91,11 +98,13 @@ def _set_total_recorded_eqs_by_mag(magnitude, eq_list_overview):
     elif float(magnitude) >= 8.0:
         eq_list_overview["recorded_eqs"]["total_per_magnitude"]["m8_0_or_greater"] += 1
 
+
 def _eq_is_weaker_than_current_weakest(magnitude, eq_list_overview):
     if not eq_list_overview["weakest"]["magnitude"]:
         return True
     if float(eq_list_overview["weakest"]["magnitude"]) > float(magnitude):
         return True
+
 
 def _eq_is_stronger_than_current_strongest(magnitude, eq_list_overview):
     if not eq_list_overview["strongest"]["magnitude"]:
