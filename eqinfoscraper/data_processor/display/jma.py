@@ -30,28 +30,39 @@ Total Recorded  : {total_recorded}
 def display_all_entries(eq_list,
                         location=True,
                         date=True,
+                        coordinates=True,
                         magnitude=True,
+                        max_seismic_intensity=True,
+                        depth=True,
                         link=True,
                         ):
-    
+
     attributes_to_display = []
 
     if location:
         attributes_to_display.append(["Location", "location"])
     if date:
         attributes_to_display.append(["Date", "date"])
+    if coordinates:
+        attributes_to_display.append(["Coordinates", "coordinates"])
     if magnitude:
         attributes_to_display.append(["Magnitude", "magnitude"])
+    if max_seismic_intensity:
+        attributes_to_display.append(["Max Seismic Intensity", "max_seismic_intensity"])
+    if depth:
+        attributes_to_display.append(["Depth", "depth"])
     if link:
         attributes_to_display.append(["EQ Details Link", "event_details_url"])
 
     for every_entry in eq_list:
         for attribute in attributes_to_display:
-            if attribute[0] != "Date":
-                print(f"{attribute[0]}: {every_entry[attribute[1]]}")
-            else:
+            if attribute[0] == "Location":
+                print(f"{attribute[0]}: {every_entry[attribute[1]]['location_en']}")
+            elif attribute[0] == "Date":
                 print(f"Observed Date: {every_entry[attribute[1]]['observed_date']}")
                 print(f"Issuance Date: {every_entry[attribute[1]]['issuance_date']}")
+            else:
+                print(f"{attribute[0]}: {every_entry[attribute[1]]}")
         print()
 
 

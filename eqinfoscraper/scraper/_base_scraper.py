@@ -12,7 +12,7 @@ class BaseScraper(ABC):
     def __init__(self, url, cutoff_date=None):
         self.eq_list = []
         self._scrape_data(url, cutoff_date)
-    
+
     def __iter__(self):
         return iter(self.eq_list)
 
