@@ -49,8 +49,7 @@ class PHIVOLCSScraper(BaseScraper):
         # Get all other necessary eq details
         eq_location = self._get_location(entry)
         eq_magnitude = self._get_magnitude(entry)
-        eq_latitude = self._get_latitude(entry)
-        eq_longitude = self._get_longitude(entry)
+        eq_latitude, eq_longitude = self._get_coordinates(entry)
         eq_depth = self._get_depth(entry)
         eq_event_details_url = self._get_event_details_url(entry)
         eq_graphic_url = self._get_graphic_url(entry)
@@ -122,6 +121,12 @@ class PHIVOLCSScraper(BaseScraper):
         magnitude = entry.find_all("td")[4].text.strip()
 
         return magnitude
+
+    def _get_coordinates(self, entry):
+        latitude = self._get_latitude(entry)
+        longitude = self._get_longitude(entry)
+
+        return latitude, longitude
 
     def _get_latitude(self, entry):
         latitude = entry.find_all("td")[1].text.strip()

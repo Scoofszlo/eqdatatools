@@ -1,11 +1,9 @@
+import json
 import re
+import requests
 from datetime import datetime
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from eqinfoscraper.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
+from eqinfoscraper.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
 from ._base_scraper import BaseScraper
 
 
@@ -16,69 +14,50 @@ class JMAScraper(BaseScraper):
                 return True
         return False
 
-    def _get_html_content_as_soup(self, url):
-        """
-        Fetches the HTML content of the specified URL using Selenium.
+    def _scrape_data(self, url, cutoff_date):
+        data = self._get_json_data(url)
 
-        This function initializes a headless Chrome WebDriver, navigates to the given URL,
-        waits for the presence of a <td> element to ensure the page has loaded, and then
-        retrieves the page source.
-        """
+        for entry in data:
+            data = self._extract_data(entry, cutoff_date)
+            if data:
+                self.eq_list.append(data)
 
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_experimental_option("detach", True)
-        driver = webdriver.Chrome(options=options)
-        driver.get(url)
+    def _get_json_data(self, url):
+        response = requests.get(url)
 
-        try:
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "td"))
-            )
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            driver.quit()
+        if response.status_code == 200:
+            data = json.loads(response.text)
+            return data
+        else:
+            print(f"Failed to fetch data. Status code: {response.status_code}")
             return None
 
-        content = driver.page_source
-        driver.close()
-
-        soupified_webpage = BeautifulSoup(content, 'html.parser')
-        return soupified_webpage
-
-    def _get_eq_data_table(self, webpage):
-        eq_data_table = webpage.find("tbody")
-        eq_data_table = eq_data_table.find_all("tr")[1:]
-        return eq_data_table
-
-    def _extract_data(self, entry, cutoff_date=None):
-        """
-        Extract each data and return the values in a dictionary object
-        """
-        # Get date
+    def _extract_data(self, entry, cutoff_date):
         eq_observed_date, eq_issuance_date = self._get_date(entry)
 
         if cutoff_date:
             if self._is_before_cutoff_date(eq_observed_date, cutoff_date):
                 return None
 
-        # Get all other necessary eq details
-        eq_location = self._get_location(entry)
+        eq_location_en, eq_location_jpn = self._get_location(entry)
         eq_magnitude = self._get_magnitude(entry)
-        eq_latitude = None
-        eq_longitude = None
-        eq_depth = None
+        eq_max_seismic_intensity = self._get_max_seismic_intensity(entry)
+        eq_latitude, eq_longitude = self._get_coordinates(entry)
+        eq_depth = self._get_depth(entry)
         eq_event_details_url = self._get_event_details_url(entry)
         eq_graphic_url = None
 
-        # Organize data into a dictionary object and return the object
         eq_entry_details = {
             "date": {
                 "observed_date": eq_observed_date,
                 "issuance_date": eq_issuance_date
             },
-            "location": eq_location,
+            "location": {
+                "location_en": eq_location_en,
+                "location_jpn": eq_location_jpn
+            },
             "magnitude": eq_magnitude,
+            "max_seismic_intensity": eq_max_seismic_intensity,
             "coordinates": {
                 "latitude": eq_latitude,
                 "longitude": eq_longitude
@@ -90,14 +69,12 @@ class JMAScraper(BaseScraper):
 
         return eq_entry_details
 
-    def _is_before_cutoff_date(self, retrieve_date, cutoff_date):
-        """
-        This ensures no earthquake entries will be extracted when its
-        date is before the cutoff date. For example, the cutoff date is
-        January 10, 2024 at 11:35 pm. Any earthquake entries before that
-        date and time will not be processed.
-        """
+    def _get_date(self, entry):
+        eq_observed_date = entry["at"]
+        eq_issuance_date = entry["rdt"]
+        return eq_observed_date, eq_issuance_date
 
+    def _is_before_cutoff_date(self, retrieve_date, cutoff_date):
         for date_format in VALID_DATE_FORMATS["JMA"]:
             try:
                 cutoff_date = datetime.strptime(cutoff_date, date_format)
@@ -107,48 +84,62 @@ class JMAScraper(BaseScraper):
         else:
             raise ValueError("Invalid date format. Please use a valid format.")
 
-        retrieve_date = datetime.strptime(retrieve_date.strip(), "%d %B %Y - %I:%M %p")
+        retrieve_date = datetime.strptime(retrieve_date.strip(), "%Y-%m-%dT%H:%M:%S%z")
 
         if retrieve_date < cutoff_date:
             return True
 
-    def _get_date(self, entry):
-        eq_observed_date = entry.find_all("td")[0].text
-        eq_issuance_date = entry.find_all("td")[4].text
-        return eq_observed_date, eq_issuance_date
-
     def _get_location(self, entry):
-        """
-        Extracts the location and returns it as a string
-        """
-        location = entry.find_all("td")[1].text
-        location = re.sub(r'\s+', ' ', location)
+        location_en = entry["en_anm"]
+        location_jpn = entry["anm"]
 
-        return location
+        return location_en, location_jpn
 
     def _get_magnitude(self, entry):
-        magnitude = entry.find_all("td")[2].text
+        magnitude = entry["mag"]
+
+        if magnitude == "":
+            return None
 
         return magnitude
 
-    def _get_latitude(self, entry):
-        pass
+    def _get_max_seismic_intensity(self, entry):
+        max_seismic_intensity = entry["maxi"]
 
-    def _get_longitude(self, entry):
-        pass
+        return max_seismic_intensity
+
+    def _get_coordinates(self, entry):
+        pattern = r'([+-]\d+\.\d+)([+-]\d+\.\d+)'
+        match = re.match(pattern, entry["cod"])
+
+        if match:
+            latitude = float(match.group(1))
+            longitude = float(match.group(2))
+
+            return latitude, longitude
+        elif entry["cod"] == "":
+            return None, None
+        else:
+            raise InvalidCoordinatesFormat(entry["cod"], pattern)
 
     def _get_depth(self, entry):
-        pass
+        pattern = r'(?:[+-]\d+\.\d+)(?:[+-]\d+\.\d+)([-+]\d+)'
+        match = re.match(pattern, entry["cod"])
+
+        if match:
+            depth = int(match.group(1))
+
+            return depth
+        elif entry["cod"] == "":
+            return None
+        else:
+            raise InvalidDepthFormat(entry["cod"], pattern)
 
     def _get_event_details_url(self, entry):
-        BASE_URL = "https://www.data.jma.go.jp/multi/quake/"
-        first_row = entry.find_all("td")[0]
-        link = first_row.find("a")
+        BASE_URL = "https://www.data.jma.go.jp/multi/quake/quake_detail.html?eventID="
+        event_id = entry["ctt"]
 
-        return BASE_URL + link["href"]
-    
-    def _get_graphic_url(self, entry):
-        pass
+        return BASE_URL + event_id
 
 
 def scrape_data(URL, cutoff_date=None):
