@@ -105,7 +105,9 @@ class PHIVOLCSScraper(BaseScraper):
 
         if match:
             date = f"{match.group(2)} {match.group(3)} {match.group(4)} - {match.group(5)}"
-            return date
+            formatted_date = get_datetime_as_iso(date, source="PHIVOLCS")
+
+            return formatted_date
         return None
 
     def _get_location(self, entry):
