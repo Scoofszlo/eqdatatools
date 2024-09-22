@@ -96,7 +96,7 @@ class JMAScraper(BaseScraper):
         return location_en, location_jpn
 
     def _get_magnitude(self, entry):
-        magnitude = entry["mag"]
+        magnitude = float(entry["mag"])
 
         if magnitude == "":
             return None
@@ -104,7 +104,7 @@ class JMAScraper(BaseScraper):
         return magnitude
 
     def _get_max_seismic_intensity(self, entry):
-        max_seismic_intensity = entry["maxi"]
+        max_seismic_intensity = int(entry["maxi"])
 
         return max_seismic_intensity
 
