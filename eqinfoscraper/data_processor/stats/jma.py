@@ -27,7 +27,6 @@ def get_stats(eq_list):
         },
         "recorded_eqs": {
             "total": 0,
-            "total_per_day": {},
             "total_per_magnitude": {
                 "unspecified": 0,
                 "m8_0_or_greater": 0,
@@ -91,22 +90,13 @@ def _set_if_weakest_eq(entry, eq_list_overview):
 
 def _set_total_recorded_eqs(entry, eq_list_overview):
     magnitude = entry["magnitude"]
-    day = int(entry["date"]["observed_date"][8:10])
 
     _set_total_recorded_eqs_by_mag(magnitude, eq_list_overview)
     _increment_total(eq_list_overview)
-    _increment_total_by_day(day, eq_list_overview)
 
 
 def _increment_total(eq_list_overview):
     eq_list_overview["recorded_eqs"]["total"] += 1
-
-
-def _increment_total_by_day(day, eq_list_overview):
-    if day not in eq_list_overview["recorded_eqs"]["total_per_day"]:
-        eq_list_overview["recorded_eqs"]["total_per_day"][day] = 0
-
-    eq_list_overview["recorded_eqs"]["total_per_day"][day] += 1
 
 
 def _set_total_recorded_eqs_by_mag(magnitude, eq_list_overview):
