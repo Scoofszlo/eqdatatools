@@ -25,13 +25,15 @@ VALID_URL_FORMATS = {
 }
 
 VALID_DATE_FORMATS = {
+    "DEFAULT": [
+        "%Y-%m-%dT%H:%M:%S%z"
+    ],
     "PHIVOLCS": [
         "%d %B %Y - %I:%M %p",
         "%d %b %Y - %I:%M %p",
         "%Y%m%d_%H%M"
     ],
     "JMA": [
-        "%Y-%m-%dT%H:%M:%S%z",
         "%Y/%m/%d %H:%M",
         "%Y%m%d_%H%M"
     ]

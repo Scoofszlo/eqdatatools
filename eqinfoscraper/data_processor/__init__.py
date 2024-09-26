@@ -1,5 +1,24 @@
 from eqinfoscraper import scraper
 from eqinfoscraper.data_processor import stats
+from eqinfoscraper.data_processor import display
+
+
+def display_overview(source, eq_list, eq_stats):
+    if source == "JMA":
+        eq_display = display.JMADisplayEQData(eq_list, eq_stats)
+    if source == "PHIVOLCS":
+        eq_display = display.PHIVOLCSDisplayEQData(eq_list, eq_stats)
+
+    eq_display.display_overview()
+
+
+def display_all_entries(source, eq_list, eq_stats):
+    if source == "JMA":
+        eq_display = display.JMADisplayEQData(eq_list, eq_stats)
+    if source == "PHIVOLCS":
+        eq_display = display.PHIVOLCSDisplayEQData(eq_list, eq_stats)
+
+    eq_display.display_all_entries()
 
 
 def get_earthquake_entries(URL, source, cutoff_date):
