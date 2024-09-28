@@ -19,8 +19,11 @@ class JMAScraper(DataScraper):
 
         for entry in data:
             data = self._extract_data(entry, cutoff_date)
-            if data:
-                self.eq_list.append(data)
+
+            if not data or self._is_data_duplicate(data):
+                continue
+
+            self.eq_list.append(data)
 
     def _get_json_data(self, url):
         response = requests.get(url)
@@ -151,6 +154,21 @@ class JMAScraper(DataScraper):
         cleaned_str = re.sub(pattern, "", string)
 
         return cleaned_str
+
+    def _is_data_duplicate(self, data):
+        """
+        Checks if data to be appended is the same as the previous entry.
+        There are some instances where there are entries that has same
+        earthquake details for some unknown reason.
+        """
+        if len(self.eq_list) == 0:
+            return False
+
+        entry_to_be_appended = data['date']['observed_date']
+        last_appended_entry = self.eq_list[-1]['date']['observed_date']
+
+        if entry_to_be_appended == last_appended_entry:
+            return True
 
 
 def scrape_data(URL, cutoff_date=None):
