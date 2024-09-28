@@ -10,10 +10,10 @@ from eqinfoscraper.constants import (
     NON_PRINTABLE_CHAR_PATTERN
 )
 from eqinfoscraper.utils import get_datetime_as_iso
-from ._base_scraper import BaseScraper
+from ._base import DataScraper
 
 
-class PHIVOLCSScraper(BaseScraper):
+class PHIVOLCSScraper(DataScraper):
     def _is_valid_url(self, url):
         for valid_url_format in VALID_URL_FORMATS["PHIVOLCS"]:
             if re.match(valid_url_format, url):

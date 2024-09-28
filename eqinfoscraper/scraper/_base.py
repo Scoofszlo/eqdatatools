@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from eqinfoscraper.exceptions import InvalidURLError
 
 
-class BaseScraper(ABC):
+class DataScraper(ABC):
     def __new__(cls, url, cutoff_date=None):
-        instance = super(BaseScraper, cls).__new__(cls)
+        instance = super(DataScraper, cls).__new__(cls)
         instance.__init__(url, cutoff_date)
 
         return instance.eq_list

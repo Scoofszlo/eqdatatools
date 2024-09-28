@@ -4,10 +4,10 @@ import requests
 from datetime import datetime
 from eqinfoscraper.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
 from eqinfoscraper.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
-from ._base_scraper import BaseScraper
+from ._base_scraper import DataScraper
 
 
-class JMAScraper(BaseScraper):
+class JMAScraper(DataScraper):
     def _is_valid_url(self, url):
         for valid_url_format in VALID_URL_FORMATS["JMA"]:
             if re.match(valid_url_format, url):
