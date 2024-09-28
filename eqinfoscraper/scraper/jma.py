@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 from eqinfoscraper.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
 from eqinfoscraper.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
-from ._base_scraper import DataScraper
+from ._base import DataScraper
 
 
 class JMAScraper(DataScraper):
@@ -88,7 +88,7 @@ class JMAScraper(DataScraper):
             return True
 
     def _get_location(self, entry):
-        location_en = entry["en_anm"]
+        location_en = self._remove_extra_characters(entry["en_anm"])
         location_jpn = entry["anm"]
 
         return location_en, location_jpn
@@ -144,6 +144,12 @@ class JMAScraper(DataScraper):
         event_id = entry["ctt"]
 
         return BASE_URL + event_id
+
+    def _remove_extra_characters(self, string):
+        pattern = r"\u200b"
+        cleaned_str = re.sub(pattern, "", string)
+
+        return cleaned_str
 
 
 def scrape_data(URL, cutoff_date=None):
