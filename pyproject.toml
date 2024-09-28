@@ -12,10 +12,11 @@ include = [
 python = "^3.8"
 requests = "^2.32.3"
 bs4 = "^0.0.2"
-tqdm = "^4.66.5"
-webdriver-manager = "^4.0.2"
-selenium = "^4.24.0"
 
+
+[tool.poetry.group.dev.dependencies]
+tqdm = "^4.66.5"
+toml = "^0.10.2"
 
 [build-system]
 requires = ["poetry-core"]
