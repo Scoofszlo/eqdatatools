@@ -1,6 +1,10 @@
 import re
-from eqinfoscraper.data_processor import get_earthquake_entries, get_stats
-from eqinfoscraper.data_processor import display
+from eqinfoscraper.data_processor import (
+    get_earthquake_entries,
+    get_stats,
+    display_overview,
+    display_all_entries
+)
 from eqinfoscraper.constants import VALID_URL_FORMATS
 
 
@@ -20,16 +24,10 @@ class EarthquakeList:
         return self._eq_stats
 
     def display_overview(self):
-        if self._source == "PHIVOLCS":
-            display.phivolcs.display_overview(self._eq_stats)
-        if self._source == "JMA":
-            display.jma.display_overview(self._eq_stats)
+        display_overview(self._source, self._eq_list, self._eq_stats)
 
     def display_all_entries(self):
-        if self._source == "PHIVOLCS":
-            display.phivolcs.display_all_entries(self._eq_list)
-        if self._source == "JMA":
-            display.jma.display_all_entries(self._eq_list)
+        display_all_entries(self._source, self._eq_list, self._eq_stats)
 
     def _identify_url_source(self, URL):
         for pattern in VALID_URL_FORMATS["JMA"]:

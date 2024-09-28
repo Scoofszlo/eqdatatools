@@ -9,6 +9,7 @@ from eqinfoscraper.constants import (
     DATE_REGEX_PATTERN,
     NON_PRINTABLE_CHAR_PATTERN
 )
+from eqinfoscraper.utils import get_datetime_as_iso
 from ._base_scraper import BaseScraper
 
 
@@ -104,7 +105,9 @@ class PHIVOLCSScraper(BaseScraper):
 
         if match:
             date = f"{match.group(2)} {match.group(3)} {match.group(4)} - {match.group(5)}"
-            return date
+            formatted_date = get_datetime_as_iso(date, source="PHIVOLCS")
+
+            return formatted_date
         return None
 
     def _get_location(self, entry):
@@ -118,7 +121,7 @@ class PHIVOLCSScraper(BaseScraper):
         return location
 
     def _get_magnitude(self, entry):
-        magnitude = entry.find_all("td")[4].text.strip()
+        magnitude = float(entry.find_all("td")[4].text.strip())
 
         return magnitude
 
@@ -129,7 +132,7 @@ class PHIVOLCSScraper(BaseScraper):
         return latitude, longitude
 
     def _get_latitude(self, entry):
-        latitude = entry.find_all("td")[1].text.strip()
+        latitude = float(entry.find_all("td")[1].text.strip())
 
         if self._is_empty_value(latitude):
             return None
@@ -137,7 +140,7 @@ class PHIVOLCSScraper(BaseScraper):
         return latitude
 
     def _get_longitude(self, entry):
-        longitude = entry.find_all("td")[2].text.strip()
+        longitude = float(entry.find_all("td")[2].text.strip())
 
         if self._is_empty_value(longitude):
             return None
@@ -145,7 +148,7 @@ class PHIVOLCSScraper(BaseScraper):
         return longitude
 
     def _get_depth(self, entry):
-        depth = entry.find_all("td")[3].text.strip()
+        depth = int(entry.find_all("td")[3].text.strip())
 
         return depth
 

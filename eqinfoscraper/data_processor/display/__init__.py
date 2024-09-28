@@ -1,4 +1,5 @@
-from . import jma
-from . import phivolcs
+from .jma import JMADisplayEQData
+from .phivolcs import PHIVOLCSDisplayEQData
 
-__all__ = ["jma", "phivolcs"]
+
+__all__ = ["JMADisplayEQData", "PHIVOLCSDisplayEQData"]
