@@ -9,6 +9,7 @@ from eqinfotools.constants import (
     DATE_REGEX_PATTERN,
     NON_PRINTABLE_CHAR_PATTERN
 )
+from eqinfotools.exceptions import InvalidURLError
 from eqinfotools.utils import get_datetime_as_iso
 from ._base import DataScraper
 
@@ -20,6 +21,21 @@ class PHIVOLCSScraper(DataScraper):
                 return True
         return False
 
+    def _scrape_data(self, url, cutoff_date):
+        if not self._is_valid_url(url):
+            raise InvalidURLError(url)
+
+        webpage = self._get_html_content_as_soup(url)
+
+        eq_entries_table = self._get_eq_data_table(webpage)
+        if not eq_entries_table:
+            return None
+
+        for entry in eq_entries_table:
+            data = self._extract_data(entry, cutoff_date)
+            if data:
+                self.eq_list.append(data)
+
     def _get_html_content_as_soup(self, url):
         """
         Makes a request to the specified URL and returns HTML content
@@ -28,7 +44,7 @@ class PHIVOLCSScraper(DataScraper):
         webpage = requests.get(url, verify=PHIVOLCS_CA_CERT_PATH)
         soupified_webpage = BeautifulSoup(webpage.text, 'html.parser')
         return soupified_webpage
-    
+
     def _get_eq_data_table(self, webpage):
         eq_data_table = webpage.find_all("table")[2]("tr")[1:]
         return eq_data_table

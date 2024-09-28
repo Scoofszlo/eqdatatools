@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from eqinfotools.exceptions import InvalidURLError
 
 
 class DataScraper(ABC):
@@ -16,20 +15,9 @@ class DataScraper(ABC):
     def __iter__(self):
         return iter(self.eq_list)
 
+    @abstractmethod
     def _scrape_data(self, url, cutoff_date):
-        if not self._is_valid_url(url):
-            raise InvalidURLError(url)
-
-        webpage = self._get_html_content_as_soup(url)
-
-        eq_entries_table = self._get_eq_data_table(webpage)
-        if not eq_entries_table:
-            return None
-
-        for entry in eq_entries_table:
-            data = self._extract_data(entry, cutoff_date)
-            if data:
-                self.eq_list.append(data)
+        pass
 
     @abstractmethod
     def _is_valid_url(self, url):
