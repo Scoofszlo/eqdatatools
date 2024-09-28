@@ -132,6 +132,7 @@ class JMAScraper(DataScraper):
 
         if match:
             depth = int(match.group(1))
+            depth = int(abs(depth) / 1000)
 
             return depth
         elif entry["cod"] == "":
