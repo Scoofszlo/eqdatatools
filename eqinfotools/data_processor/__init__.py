@@ -1,6 +1,6 @@
-from eqinfoscraper import scraper
-from eqinfoscraper.data_processor import stats
-from eqinfoscraper.data_processor import display
+from eqinfotools import scraper
+from eqinfotools.data_processor import stats
+from eqinfotools.data_processor import display
 
 
 def display_overview(source, eq_list, eq_stats):

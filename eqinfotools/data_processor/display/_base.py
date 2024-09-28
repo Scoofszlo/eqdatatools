@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from eqinfoscraper.constants import VALID_DATE_FORMATS
+from eqinfotools.constants import VALID_DATE_FORMATS
 
 
 class DisplayEQData(ABC):

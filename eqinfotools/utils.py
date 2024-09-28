@@ -1,5 +1,5 @@
 from datetime import datetime, timezone, timedelta
-from eqinfoscraper.constants import VALID_DATE_FORMATS
+from eqinfotools.constants import VALID_DATE_FORMATS
 
 
 def get_datetime_as_iso(datetime_str, source):

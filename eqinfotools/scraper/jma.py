@@ -2,8 +2,8 @@ import json
 import re
 import requests
 from datetime import datetime
-from eqinfoscraper.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
-from eqinfoscraper.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
+from eqinfotools.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
+from eqinfotools.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
 from ._base import DataScraper
 
 

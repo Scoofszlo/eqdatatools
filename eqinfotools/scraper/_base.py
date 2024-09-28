@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from eqinfoscraper.exceptions import InvalidURLError
+from eqinfotools.exceptions import InvalidURLError
 
 
 class DataScraper(ABC):
