@@ -1,11 +1,11 @@
 import re
-from eqinfotools.data_processor import (
+from eqdatatools.data_processor import (
     get_earthquake_entries,
     get_stats,
     display_overview,
     display_all_entries
 )
-from eqinfotools.constants import VALID_URL_FORMATS
+from eqdatatools.constants import VALID_URL_FORMATS
 
 
 class EarthquakeList:

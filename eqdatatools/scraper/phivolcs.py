@@ -2,15 +2,15 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from eqinfotools.constants import (
+from eqdatatools.constants import (
     PHIVOLCS_CA_CERT_PATH,
     VALID_URL_FORMATS,
     VALID_DATE_FORMATS,
     DATE_REGEX_PATTERN,
     NON_PRINTABLE_CHAR_PATTERN
 )
-from eqinfotools.exceptions import InvalidURLError
-from eqinfotools.utils import get_datetime_as_iso
+from eqdatatools.exceptions import InvalidURLError
+from eqdatatools.utils import get_datetime_as_iso
 from ._base import DataScraper
 
 
