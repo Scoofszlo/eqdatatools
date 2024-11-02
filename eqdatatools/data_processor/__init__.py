@@ -21,11 +21,11 @@ def display_all_entries(source, eq_list, eq_stats):
     eq_display.display_all_entries()
 
 
-def get_earthquake_entries(URL, source, cutoff_date):
+def get_earthquake_entries(URL, source, start_date):
     if source == "JMA":
-        eq_list = scraper.jma.scrape_data(URL, cutoff_date)
+        eq_list = scraper.jma.scrape_data(URL, start_date)
     if source == "PHIVOLCS":
-        eq_list = scraper.phivolcs.scrape_data(URL, cutoff_date)
+        eq_list = scraper.phivolcs.scrape_data(URL, start_date)
 
     return eq_list
 

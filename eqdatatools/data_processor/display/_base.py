@@ -65,10 +65,8 @@ Total Recorded  : {total_recorded}
         return self._eq_stats["recorded_eqs"]["total_per_magnitude"]["below_m4_0"]
 
     def _get_month_and_year(self):
-        date_format = VALID_DATE_FORMATS["DEFAULT"][0]
-
-        start_date = datetime.strptime(self._eq_stats["date_range"]["start_date"], date_format)
-        end_date = datetime.strptime(self._eq_stats["date_range"]["end_date"], date_format)
+        start_date = self._eq_stats["date_range"]["start_date"]
+        end_date = self._eq_stats["date_range"]["end_date"]
 
         if start_date.month == end_date.month:
             return start_date.strftime("%B %Y")

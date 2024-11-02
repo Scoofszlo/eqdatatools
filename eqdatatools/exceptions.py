@@ -9,8 +9,8 @@ class InvalidURLError(Exception):
 class InvalidDateFormat(Exception):
     """Custom exception for invalid date formats."""
 
-    def __init__(self):
-        self.message = "Invalid date format detected. Problem is most likely due to inconsistent HTML element structure."
+    def __init__(self, datetime_str):
+        self.message = f"The date format '{datetime_str}' is invalid."
         super().__init__(self.message)
 
 

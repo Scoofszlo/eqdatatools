@@ -1,3 +1,4 @@
+from datetime import timezone, timedelta
 import os
 
 
@@ -34,9 +35,15 @@ VALID_DATE_FORMATS = {
         "%Y%m%d_%H%M"
     ],
     "JMA": [
+        "%Y-%m-%dT%H:%M:%S%z",
         "%Y/%m/%d %H:%M",
         "%Y%m%d_%H%M"
     ]
+}
+
+TIMEZONES = {
+    "PHIVOLCS": timezone(timedelta(hours=8)),
+    "JMA": None  # JMA dates are always in UTC time
 }
 
 DATE_REGEX_PATTERN = {

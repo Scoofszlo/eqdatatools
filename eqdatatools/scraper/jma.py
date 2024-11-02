@@ -1,9 +1,9 @@
 import json
 import re
 import requests
-from datetime import datetime
-from eqdatatools.constants import VALID_URL_FORMATS, VALID_DATE_FORMATS
+from eqdatatools.constants import VALID_URL_FORMATS
 from eqdatatools.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
+from eqdatatools.scraper._utils import convert_to_datetime_obj
 from ._base import DataScraper
 
 
@@ -14,11 +14,11 @@ class JMAScraper(DataScraper):
                 return True
         return False
 
-    def _scrape_data(self, url, cutoff_date):
+    def _scrape_data(self, url, start_date):
         data = self._get_json_data(url)
 
         for entry in data:
-            data = self._extract_data(entry, cutoff_date)
+            data = self._extract_data(entry, start_date)
 
             if not data or self._is_data_duplicate(data):
                 continue
@@ -35,11 +35,11 @@ class JMAScraper(DataScraper):
             print(f"Failed to fetch data. Status code: {response.status_code}")
             return None
 
-    def _extract_data(self, entry, cutoff_date):
+    def _extract_data(self, entry, start_date):
         eq_observed_date, eq_issuance_date = self._get_date(entry)
 
-        if cutoff_date:
-            if self._is_before_cutoff_date(eq_observed_date, cutoff_date):
+        if start_date:
+            if self._is_date_before_start_date(eq_observed_date, start_date):
                 return None
 
         eq_location_en, eq_location_jpn = self._get_location(entry)
@@ -71,24 +71,10 @@ class JMAScraper(DataScraper):
         return eq_entry_details
 
     def _get_date(self, entry):
-        eq_observed_date = entry["at"]
-        eq_issuance_date = entry["rdt"]
+        eq_observed_date = convert_to_datetime_obj(entry["at"], source="JMA")
+        eq_issuance_date = convert_to_datetime_obj(entry["rdt"], source="JMA")
+
         return eq_observed_date, eq_issuance_date
-
-    def _is_before_cutoff_date(self, retrieve_date, cutoff_date):
-        for date_format in VALID_DATE_FORMATS["JMA"]:
-            try:
-                cutoff_date = datetime.strptime(cutoff_date, date_format)
-                break
-            except ValueError:
-                continue
-        else:
-            raise ValueError("Invalid date format. Please use a valid format.")
-
-        retrieve_date = datetime.strptime(retrieve_date.strip(), "%Y-%m-%dT%H:%M:%S%z")
-
-        if retrieve_date < cutoff_date:
-            return True
 
     def _get_location(self, entry):
         location_en = self._remove_extra_characters(entry["en_anm"])
@@ -171,7 +157,7 @@ class JMAScraper(DataScraper):
             return True
 
 
-def scrape_data(URL, cutoff_date=None):
-    eq_list = JMAScraper(URL, cutoff_date)
+def scrape_data(URL, start_date):
+    eq_list = JMAScraper(URL, start_date)
 
     return eq_list

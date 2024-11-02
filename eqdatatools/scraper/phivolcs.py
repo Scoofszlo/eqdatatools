@@ -1,16 +1,14 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
 from eqdatatools.constants import (
     PHIVOLCS_CA_CERT_PATH,
     VALID_URL_FORMATS,
-    VALID_DATE_FORMATS,
     DATE_REGEX_PATTERN,
     NON_PRINTABLE_CHAR_PATTERN
 )
 from eqdatatools.exceptions import InvalidURLError
-from eqdatatools.utils import get_datetime_as_iso
+from eqdatatools.scraper._utils import convert_to_datetime_obj
 from ._base import DataScraper
 
 
@@ -21,7 +19,7 @@ class PHIVOLCSScraper(DataScraper):
                 return True
         return False
 
-    def _scrape_data(self, url, cutoff_date):
+    def _scrape_data(self, url, start_date):
         if not self._is_valid_url(url):
             raise InvalidURLError(url)
 
@@ -32,7 +30,7 @@ class PHIVOLCSScraper(DataScraper):
             return None
 
         for entry in eq_entries_table:
-            data = self._extract_data(entry, cutoff_date)
+            data = self._extract_data(entry, start_date)
             if data:
                 self.eq_list.append(data)
 
@@ -49,7 +47,7 @@ class PHIVOLCSScraper(DataScraper):
         eq_data_table = webpage.find_all("table")[2]("tr")[1:]
         return eq_data_table
 
-    def _extract_data(self, entry, cutoff_date=None):
+    def _extract_data(self, entry, start_date):
         """
         Extract each data and return the values in a dictionary object
         """
@@ -59,8 +57,8 @@ class PHIVOLCSScraper(DataScraper):
         if eq_date is None:
             return None
 
-        if cutoff_date:
-            if self._is_before_cutoff_date(eq_date, cutoff_date):
+        if start_date:
+            if self._is_date_before_start_date(eq_date, start_date):
                 return None
 
         # Get all other necessary eq details
@@ -85,29 +83,7 @@ class PHIVOLCSScraper(DataScraper):
             "graphic_url": eq_graphic_url,
         }
 
-        return eq_entry_details
-
-    def _is_before_cutoff_date(self, retrieve_date, cutoff_date):
-        """
-        This ensures no earthquake entries will be extracted when its
-        date is before the cutoff date. For example, the cutoff date is
-        January 10, 2024 at 11:35 pm. Any earthquake entries before that
-        date and time will not be processed.
-        """
-
-        for date_format in VALID_DATE_FORMATS["PHIVOLCS"]:
-            try:
-                cutoff_date = datetime.strptime(cutoff_date, date_format)
-                break
-            except ValueError:
-                continue
-        else:
-            raise ValueError("Invalid date format. Please use a valid format.")
-
-        retrieve_date = datetime.strptime(retrieve_date.strip(), "%d %B %Y - %I:%M %p")
-
-        if retrieve_date < cutoff_date:
-            return True
+        return eq_entry_details 
 
     def _get_date(self, entry):
         """
@@ -121,9 +97,10 @@ class PHIVOLCSScraper(DataScraper):
 
         if match:
             date = f"{match.group(2)} {match.group(3)} {match.group(4)} - {match.group(5)}"
-            formatted_date = get_datetime_as_iso(date, source="PHIVOLCS")
+            formatted_date = convert_to_datetime_obj(date, source="PHIVOLCS")
 
             return formatted_date
+
         return None
 
     def _get_location(self, entry):
@@ -208,11 +185,11 @@ class PHIVOLCSScraperAlt3(PHIVOLCSScraper):
         return eq_data_table
 
 
-def scrape_data(URL, cutoff_date):
+def scrape_data(URL, start_date):
     scrapers = [PHIVOLCSScraper, PHIVOLCSScraperAlt2, PHIVOLCSScraperAlt3]
 
     for scraper in scrapers:
-        eq_list = scraper(URL, cutoff_date)
+        eq_list = scraper(URL, start_date)
 
         if eq_list:
             break
