@@ -3,26 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 from eqdatatools.constants import (
     PHIVOLCS_CA_CERT_PATH,
-    VALID_URL_FORMATS,
     DATE_REGEX_PATTERN,
     NON_PRINTABLE_CHAR_PATTERN
 )
-from eqdatatools.exceptions import InvalidURLError
 from eqdatatools.scraper._utils import convert_to_datetime_obj
 from ._base import DataScraper
 
 
 class PHIVOLCSScraper(DataScraper):
-    def _is_valid_url(self, url):
-        for valid_url_format in VALID_URL_FORMATS["PHIVOLCS"]:
-            if re.match(valid_url_format, url):
-                return True
-        return False
-
     def _scrape_data(self, url, start_date):
-        if not self._is_valid_url(url):
-            raise InvalidURLError(url)
-
         webpage = self._get_html_content_as_soup(url)
 
         eq_entries_table = self._get_eq_data_table(webpage)
@@ -185,7 +174,16 @@ class PHIVOLCSScraperAlt3(PHIVOLCSScraper):
         return eq_data_table
 
 
-def scrape_data(URL, start_date):
+def scrape_data(URL: str, start_date: str):
+    """
+    There are other 2 versions of data scraper made for PHIVOLCS to support data scraping
+    for old pages since the main scraper doesn't work on them due to different HTML element
+    structure of eq data. 
+
+    This function basically uses the main scraper to scrape data. If it doesn't work, it will
+    use another scraper. If scraping works, eq_list must contain all the data that are scraped,
+    thus returning the eq_list data 
+    """
     scrapers = [PHIVOLCSScraper, PHIVOLCSScraperAlt2, PHIVOLCSScraperAlt3]
 
     for scraper in scrapers:

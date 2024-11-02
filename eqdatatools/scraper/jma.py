@@ -1,19 +1,12 @@
 import json
 import re
 import requests
-from eqdatatools.constants import VALID_URL_FORMATS
 from eqdatatools.exceptions import InvalidCoordinatesFormat, InvalidDepthFormat
 from eqdatatools.scraper._utils import convert_to_datetime_obj
 from ._base import DataScraper
 
 
 class JMAScraper(DataScraper):
-    def _is_valid_url(self, url):
-        for valid_url_format in VALID_URL_FORMATS["JMA"]:
-            if re.match(valid_url_format, url):
-                return True
-        return False
-
     def _scrape_data(self, url, start_date):
         data = self._get_json_data(url)
 

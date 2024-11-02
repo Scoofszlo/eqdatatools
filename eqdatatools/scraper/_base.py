@@ -35,14 +35,6 @@ class DataScraper(ABC):
         pass
 
     @abstractmethod
-    def _is_valid_url(self, url):
-        """
-        Checks the URL if it is one of the valid URLs supported for extraction
-        of data.
-        """
-        pass
-
-    @abstractmethod
     def _extract_data(self, entry, cutoff_date):
         pass
 
