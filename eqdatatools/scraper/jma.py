@@ -8,17 +8,17 @@ from ._base import DataScraper
 
 class JMAScraper(DataScraper):
     def _scrape_data(self, url, start_date):
-        data = self._get_json_data(url)
+        source_data = self._get_source_data(url)
 
-        for entry in data:
-            data = self._extract_data(entry, start_date)
+        for entry in source_data:
+            extracted_data = self._extract_data(entry, start_date)
 
-            if not data or self._is_data_duplicate(data):
+            if not extracted_data or self._is_data_duplicate(extracted_data):
                 continue
 
-            self.eq_list.append(data)
+            self.eq_list.append(extracted_data)
 
-    def _get_json_data(self, url):
+    def _get_source_data(self, url):
         response = requests.get(url)
 
         if response.status_code == 200:

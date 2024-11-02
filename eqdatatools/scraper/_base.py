@@ -35,6 +35,10 @@ class DataScraper(ABC):
         pass
 
     @abstractmethod
+    def _get_source_data(self, url):
+        pass
+
+    @abstractmethod
     def _extract_data(self, entry, cutoff_date):
         pass
 

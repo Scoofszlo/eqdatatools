@@ -12,35 +12,30 @@ from ._base import DataScraper
 
 class PHIVOLCSScraper(DataScraper):
     def _scrape_data(self, url, start_date):
-        webpage = self._get_html_content_as_soup(url)
+        source_data = self._get_source_data(url)
 
-        eq_entries_table = self._get_eq_data_table(webpage)
-        if not eq_entries_table:
+        if not source_data:
             return None
 
-        for entry in eq_entries_table:
-            data = self._extract_data(entry, start_date)
-            if data:
-                self.eq_list.append(data)
+        for entry in source_data:
+            extracted_data = self._extract_data(entry, start_date)
 
-    def _get_html_content_as_soup(self, url):
-        """
-        Makes a request to the specified URL and returns HTML content
-        string
-        """
+            if extracted_data:
+                self.eq_list.append(extracted_data)
+
+    def _get_source_data(self, url):
         webpage = requests.get(url, verify=PHIVOLCS_CA_CERT_PATH)
-        soupified_webpage = BeautifulSoup(webpage.text, 'html.parser')
-        return soupified_webpage
+        webpage = BeautifulSoup(webpage.text, 'html.parser')
+
+        source_data = self._get_eq_data_table(webpage)
+
+        return source_data
 
     def _get_eq_data_table(self, webpage):
         eq_data_table = webpage.find_all("table")[2]("tr")[1:]
         return eq_data_table
 
     def _extract_data(self, entry, start_date):
-        """
-        Extract each data and return the values in a dictionary object
-        """
-        # Get date
         eq_date = self._get_date(entry)
 
         if eq_date is None:
