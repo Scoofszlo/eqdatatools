@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
-from eqdatatools.constants import VALID_DATE_FORMATS
 
 
 class DisplayEQData(ABC):
