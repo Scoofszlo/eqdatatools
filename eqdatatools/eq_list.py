@@ -64,13 +64,15 @@ class BaseEarthquakeList(ABC):
 
 
 class PHIVOLCSEarthquakeList(BaseEarthquakeList):
+    def __init__(self, url: str, start_date: str):
+        super().__init__(url, start_date)
+        self.eq_display = display.PHIVOLCSDisplayEQData(self._eq_list, self._eq_stats)
+
     def display_overview(self) -> None:
-        eq_display = display.PHIVOLCSDisplayEQData(self._eq_list, self._eq_stats)
-        eq_display.display_overview()
+        self.eq_display.display_overview()
 
     def display_all_entries(self) -> None:
-        eq_display = display.PHIVOLCSDisplayEQData(self._eq_list, self._eq_stats)
-        eq_display.display_all_entries()
+        self.eq_display.display_all_entries()
 
     def _get_earthquake_entries(self, url: str, start_date: str) -> List[Dict[str, Any]]:
         eq_list = scraper.phivolcs.scrape_data(url, start_date)
@@ -82,13 +84,15 @@ class PHIVOLCSEarthquakeList(BaseEarthquakeList):
 
 
 class JMAEarthquakeList(BaseEarthquakeList):
+    def __init__(self, url: str, start_date: str):
+        super().__init__(url, start_date)
+        self.eq_display = display.JMADisplayEQData(self._eq_list, self._eq_stats)
+
     def display_overview(self) -> None:
-        eq_display = display.JMADisplayEQData(self._eq_list, self._eq_stats)
-        eq_display.display_overview()
+        self.eq_display.display_overview()
 
     def display_all_entries(self) -> None:
-        eq_display = display.JMADisplayEQData(self._eq_list, self._eq_stats)
-        eq_display.display_all_entries()
+        self.eq_display.display_all_entries()
 
     def _get_earthquake_entries(self, url: str, start_date: str) -> List[Dict[str, Any]]:
         eq_list = scraper.jma.scrape_data(url, start_date)
