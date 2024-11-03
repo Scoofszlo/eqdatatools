@@ -2,18 +2,18 @@ from ._base import DisplayEQData
 
 
 class JMADisplayEQData(DisplayEQData):
-    def _get_strongest_eq_location(self):
+    def _get_strongest_eq_location(self) -> str:
         return self._eq_stats["strongest"]["location"]["location_en"]
 
-    def _get_weakest_eq_location(self):
+    def _get_weakest_eq_location(self) -> str:
         return self._eq_stats["weakest"]["location"]["location_en"]
 
     def display_all_entries(self,
-                            location=True,
-                            date=True,
-                            magnitude=True,
-                            link=True,
-                            ):
+                            location: bool = True,
+                            date: bool = True,
+                            magnitude: bool = True,
+                            link: bool = True,
+                            ) -> None:
 
         attributes_to_display = []
 
@@ -31,6 +31,6 @@ class JMADisplayEQData(DisplayEQData):
                 if attribute[0] != "Date":
                     print(f"{attribute[0]}: {every_entry[attribute[1]]}")
                 else:
-                    print(f"Observed Date: {every_entry[attribute[1]]['observed_date']}")
                     print(f"Issuance Date: {every_entry[attribute[1]]['issuance_date']}")
+                    print(f"Observed Date: {every_entry[attribute[1]]['observed_date']}")
             print()

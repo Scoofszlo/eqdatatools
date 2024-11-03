@@ -3,14 +3,14 @@ from ._base import DisplayEQData
 
 class PHIVOLCSDisplayEQData(DisplayEQData):
     def display_all_entries(self,
-                            location=True,
-                            date=True,
-                            coordinates=True,
-                            depth=True,
-                            magnitude=True,
-                            link=True,
-                            image=True
-                            ):
+                            location: bool = True,
+                            date: bool = True,
+                            coordinates: bool = True,
+                            depth: bool = True,
+                            magnitude: bool = True,
+                            link: bool = True,
+                            image: bool = True
+                            ) -> None:
 
         attributes_to_display = []
 

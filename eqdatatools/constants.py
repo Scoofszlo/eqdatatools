@@ -1,8 +1,9 @@
 from datetime import timezone, timedelta
 import os
+from typing import Dict, List
 
 
-def get_ca_cert_file_path():
+def get_ca_cert_file_path() -> str:
     """
     Ensures that CA certificate file is imported properly regardless
     of where script is being executed.
@@ -15,7 +16,7 @@ def get_ca_cert_file_path():
 PHIVOLCS_CA_CERT_PATH = get_ca_cert_file_path()
 PHIVOLCS_HOME_URL = "https://earthquake.phivolcs.dost.gov.ph/"
 
-VALID_URL_FORMATS = {
+VALID_URL_FORMATS: Dict[str, List[str]] = {
     "PHIVOLCS": [
         r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?$",
         r"^https?:\/\/earthquake.phivolcs.dost.gov.ph\/?EQLatest-Monthly\/[2][0](([1][7-9])|[2][0-4])\/[\w\.?]+\/?$"
@@ -25,7 +26,7 @@ VALID_URL_FORMATS = {
     ]
 }
 
-VALID_DATE_FORMATS = {
+VALID_DATE_FORMATS: Dict[str, List[str]] = {
     "DEFAULT": [
         "%Y-%m-%dT%H:%M:%S%z"
     ],
@@ -41,12 +42,12 @@ VALID_DATE_FORMATS = {
     ]
 }
 
-TIMEZONES = {
+TIMEZONES: Dict[str, timezone] = {
     "PHIVOLCS": timezone(timedelta(hours=8)),
     "JMA": None  # JMA dates are always in UTC time
 }
 
-DATE_REGEX_PATTERN = {
+DATE_REGEX_PATTERN: Dict[str, str] = {
     "PHIVOLCS": r"((\d{2})\s+(\w+)\s+(\d{4})\s+-\s+(\d{2}:\d{2}\s+[AaPp][Mm]))"
 }
 

@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 class StatsGenerator(ABC):
-    def __new__(cls, eq_list):
+    def __new__(cls, eq_list: List[Dict[str, Any]]) -> Dict[str, Any]:
         instance = super(StatsGenerator, cls).__new__(cls)
         eq_list_overview = instance.get_stats(eq_list)
 
         return eq_list_overview
 
-    def get_stats(self, eq_list):
+    def get_stats(self, eq_list: List[Dict[str, Any]]) -> Dict[str, Any]:
         eq_list_overview = self._get_eq_list_overview_dict()
 
         self._set_date_range(eq_list, eq_list_overview)
@@ -25,7 +27,7 @@ class StatsGenerator(ABC):
         return eq_list_overview
 
     @abstractmethod
-    def _get_eq_list_overview_dict(self):
+    def _get_eq_list_overview_dict(self) -> Dict[str, Any]:
         """Returns a dict containing eq details such as strongest, weakest, and
         total recorded eqs."""
 
@@ -63,7 +65,7 @@ class StatsGenerator(ABC):
         return eq_list_overview
 
     @abstractmethod
-    def _set_date_range(self, start_date, end_date, eq_list_overview):
+    def _set_date_range(self, start_date: datetime, end_date: datetime, eq_list_overview: Dict[str, Any]) -> None:
         """
         Gets the date range from the list of earthquake entries by retrieving
         the date of first recorded earthquake, which will become the start date
@@ -76,7 +78,7 @@ class StatsGenerator(ABC):
         eq_list_overview["date_range"]["end_date"] = end_date
 
     @abstractmethod
-    def _set_as_strongest_eq(self, entry, eq_list_overview):
+    def _set_as_strongest_eq(self, entry: Dict[str, Any], eq_list_overview: Dict[str, Any]) -> None:
         """
         Checks if the earthquake being checked is the strongest. If true,
         then it will be set as a strongest earthquake.
@@ -89,7 +91,7 @@ class StatsGenerator(ABC):
         eq_list_overview["strongest"]["depth"] = entry["depth"]
 
     @abstractmethod
-    def _set_as_weakest_eq(self, entry, eq_list_overview):
+    def _set_as_weakest_eq(self, entry: Dict[str, Any], eq_list_overview: Dict[str, Any]) -> None:
         """
         Checks if the earthquake being checked is the weakest. If true,
         then it will be set as a weakest earthquake.
@@ -100,16 +102,16 @@ class StatsGenerator(ABC):
         eq_list_overview["weakest"]["coordinates"] = entry["coordinates"]
         eq_list_overview["weakest"]["depth"] = entry["depth"]
 
-    def _set_total_recorded_eqs(self, entry, eq_list_overview):
+    def _set_total_recorded_eqs(self, entry: Dict[str, Any], eq_list_overview: Dict[str, Any]) -> None:
         magnitude = entry["magnitude"]
 
         self._set_total_recorded_eqs_by_mag(magnitude, eq_list_overview)
         self._increment_total(eq_list_overview)
 
-    def _increment_total(self, eq_list_overview):
+    def _increment_total(self, eq_list_overview: Dict[str, Any]) -> None:
         eq_list_overview["recorded_eqs"]["total"] += 1
 
-    def _set_total_recorded_eqs_by_mag(self, magnitude, eq_list_overview):
+    def _set_total_recorded_eqs_by_mag(self, magnitude: float, eq_list_overview: Dict[str, Any]) -> None:
         if magnitude is None:
             eq_list_overview["recorded_eqs"]["total_per_magnitude"]["unspecified"] += 1
             return
@@ -123,7 +125,7 @@ class StatsGenerator(ABC):
         elif magnitude >= 8.0:
             eq_list_overview["recorded_eqs"]["total_per_magnitude"]["m8_0_or_greater"] += 1
 
-    def _eq_is_weaker_than_current_weakest(self, magnitude, eq_list_overview):
+    def _eq_is_weaker_than_current_weakest(self, magnitude: float, eq_list_overview: Dict[str, Any]) -> bool:
         if not eq_list_overview["weakest"]["magnitude"]:
             return True
         if magnitude is None:
@@ -131,7 +133,7 @@ class StatsGenerator(ABC):
         if eq_list_overview["weakest"]["magnitude"] > magnitude:
             return True
 
-    def _eq_is_stronger_than_current_strongest(self, magnitude, eq_list_overview):
+    def _eq_is_stronger_than_current_strongest(self, magnitude: float, eq_list_overview: Dict[str, Any]) -> bool:
         if not eq_list_overview["strongest"]["magnitude"]:
             return True
         if magnitude is None:
